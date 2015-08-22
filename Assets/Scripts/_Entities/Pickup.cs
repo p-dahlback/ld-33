@@ -5,8 +5,8 @@ namespace LD33.Entities
 {
 	public class Pickup : MonoBehaviour
 	{
-		public int value = 1;
-		public float lifeTime = 5;
+		public float value = 0.2f;
+//		public float lifeTime = 5;
 
 
 		// Use this for initialization
@@ -18,23 +18,24 @@ namespace LD33.Entities
 		// Update is called once per frame
 		void Update ()
 		{
-			lifeTime -= Time.deltaTime;
+//			lifeTime -= Time.deltaTime;
 
-			if (lifeTime <= 0) {
-				Debug.Log ("Pickup expired");
-				Destroy (gameObject);
-			}
+//			if (lifeTime <= 0) {
+//				Debug.Log ("Pickup expired");
+//				Destroy (gameObject);
+//			}
 		}
 
 		void OnCollisionEnter2D (Collision2D collision)
 		{
+			Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collision.collider);
 			Blob blob = collision.gameObject.GetComponent<Blob> ();
 
 			if (blob != null) {
-				Debug.Log ("Picked up mass");
 				blob.AddMass (value, collision.contacts[0].point);
 				Destroy (gameObject);
 			}
+
 		}
 	}
 }

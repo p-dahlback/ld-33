@@ -5,18 +5,11 @@ namespace LD33.Entities
 {
 	public class Bullet : MonoBehaviour
 	{
-
-		public GameObject parent;
 		public int damageValue;
 		public float lifeTime = 4;
 		public Faction faction;
 
 		public Vector2 velocity;
-
-		void Awake() 
-		{
-			Physics2D.IgnoreCollision (gameObject.GetComponent<Collider2D> (), parent.GetComponent<Collider2D> ());
-		}
 
 		// Use this for initialization
 		void Start ()
@@ -39,11 +32,6 @@ namespace LD33.Entities
 
 		void OnCollisionEnter2D (Collision2D collision)
 		{
-			if (collision.gameObject == parent) {
-				Debug.Log("Collision with parent - ignore");
-				return;
-			}
-
 			Faction otherFaction = Faction.MISC;
 			bool factionCollision = false;
 			Entity entity = collision.gameObject.GetComponent<Entity> ();

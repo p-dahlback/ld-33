@@ -11,10 +11,9 @@ namespace LD33.Entities
 		public float minimumScale = 0.5f;
 		public float maximumScale = 1.5f;
 		public int pulsesPerInterval = 2;
-		private float deltaTime;
-
-		
 		public float maxMass = 1.0f;
+		public float requiredMassForSplit = 0.5f;
+		private float deltaTime;
 		private float leftOverMass = 0;
 
 		// Use this for initialization
@@ -54,34 +53,47 @@ namespace LD33.Entities
 
 		public void AddMass (float value, Vector2 point)
 		{
-			minimumScale += value;
-			maximumScale += value;
+			Debug.Log ("Picked up mass: " + value);
+			if (maximumScale >= maxMass) {
+				leftOverMass += value;
+			} else {
 
-			if(maximumScale > maxMass)
-			{
-				float diff = maximumScale - maxMass;
-				maximumScale = maxMass;
-				
-				leftOverMass = diff;
-				if(diff >= 0.5f)
-				{
-					AddBlob(point);
+				minimumScale += value;
+				maximumScale += value;
+
+				if (maximumScale > maxMass) {
+					float diff = maximumScale - maxMass;
+					maximumScale = maxMass;
+					minimumScale -= diff;
+					
+					leftOverMass = diff;
 				}
+			}
+			if (leftOverMass >= requiredMassForSplit) {
+				AddBlob (point);
 			}
 		}
 		
-		private void AddBlob(Vector2 point)
+		private void AddBlob (Vector2 point)
 		{
-			GameObject newBlob = (GameObject) Instantiate(blobFactory, new Vector3(point.x, point.y, 0), transform.rotation);
-			Blob blobSettings = newBlob.GetComponent<Blob>();
-			blobSettings.AddMass(leftOverMass, point);
-			
-			SpringJoint2D joint = gameObject.AddComponent<SpringJoint2D>();
-			joint.anchor = point;
-			joint.distance = 0.1f;
-			joint.dampingRatio = 0.2f;
-			joint.connectedAnchor = point;
-			
+			leftOverMass -= requiredMassForSplit;
+
+			Blob newBlob = (Blob)Instantiate (blobFactory, new Vector3 (point.x, point.y, 0), transform.rotation);
+			newBlob.blobFactory = blobFactory;
+			newBlob.gameObject.SetActive (true);
+			newBlob.AddMass (leftOverMass, point);
+
+//			SpringJoint2D joint = gameObject.AddComponent<SpringJoint2D> ();
+//			joint.distance = 0.05f;
+//			joint.dampingRatio = 0.95f;
+//			joint.anchor = transform.InverseTransformPoint(point);
+//			joint.connectedBody = newBlob.gameObject.GetComponent<Rigidbody2D> ();
+
+			DistanceJoint2D joint = gameObject.AddComponent<DistanceJoint2D>();
+			joint.distance = 0.05f;
+			joint.anchor = transform.InverseTransformPoint(point);;
+			joint.connectedBody = newBlob.gameObject.GetComponent<Rigidbody2D>();
+
 			leftOverMass = 0;
 		}
 	}

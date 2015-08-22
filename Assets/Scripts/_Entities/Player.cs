@@ -17,9 +17,6 @@ namespace LD33.Entities
 			bullet = player.bullet;
 			bulletSpeed = player.bulletSpeed;
 			cooldown = player.cooldown;
-
-			Bullet bulletSettings = bullet.gameObject.GetComponent<Bullet> ();
-			bulletSettings.parent = gameObject;
 		}
 
 		// Use this for initialization
