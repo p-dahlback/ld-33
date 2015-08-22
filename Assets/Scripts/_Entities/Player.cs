@@ -5,12 +5,20 @@ namespace LD33.Entities
 {
 	public class Player : MonoBehaviour
 	{
-
-		public Camera camera;
 		public Rigidbody2D bullet;
 		public float bulletSpeed = 10f;
 		public float cooldown = 0.15f;
 		private float timeSinceLastShot = 0f;
+
+		public void CopyFrom(Player player)
+		{
+			bullet = player.bullet;
+			bulletSpeed = player.bulletSpeed;
+			cooldown = player.cooldown;
+
+			Bullet bulletSettings = bullet.gameObject.GetComponent<Bullet>();
+			bulletSettings.parent = gameObject;
+		}
 
 		// Use this for initialization
 		void Start ()
@@ -25,7 +33,7 @@ namespace LD33.Entities
 				timeSinceLastShot += Time.deltaTime;
 			}
 
-			Vector3 mousePosInWorld = camera.ScreenToWorldPoint (Input.mousePosition);
+			Vector3 mousePosInWorld = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 			transform.rotation = Quaternion.LookRotation (Vector3.forward, mousePosInWorld - transform.position);
 
 			if (timeSinceLastShot >= cooldown && Input.GetKeyDown (KeyCode.Space)) {
@@ -40,11 +48,6 @@ namespace LD33.Entities
 			Rigidbody2D newBullet = (Rigidbody2D)Instantiate (bullet, transform.position, transform.rotation);
 			newBullet.gameObject.SetActive (true);
 			newBullet.velocity = new Vector2 (transform.up.x, transform.up.y) * bulletSpeed;
-		}
-
-		public void AddMass (int value)
-		{
-
 		}
 	}
 }

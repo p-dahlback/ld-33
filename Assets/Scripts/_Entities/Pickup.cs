@@ -20,21 +20,19 @@ namespace LD33.Entities
 		{
 			lifeTime -= Time.deltaTime;
 
-			if(lifeTime <= 0)
-			{
-				Debug.Log("Pickup expired");
+			if (lifeTime <= 0) {
+				Debug.Log ("Pickup expired");
 				Destroy (gameObject);
 			}
 		}
 
-		void OnTriggerEnter2D(Collider2D collider)
+		void OnCollisionEnter2D (Collision2D collision)
 		{
-			Player player = collider.gameObject.GetComponent<Player>();
+			Blob blob = collision.gameObject.GetComponent<Blob> ();
 
-			if (player != null)
-			{
-				Debug.Log("Picked up mass");
-				player.AddMass(value);
+			if (blob != null) {
+				Debug.Log ("Picked up mass");
+				blob.AddMass (value, collision.contacts[0].point);
 				Destroy (gameObject);
 			}
 		}
