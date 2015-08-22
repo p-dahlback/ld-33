@@ -1,25 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameController : MonoBehaviour
+namespace LD33
 {
-
-	private int currentWave = 0;
-
-	// Use this for initialization
-	void Start ()
+	public class GameController : MonoBehaviour
 	{
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
-	}
+		private int currentWave = 0;
 
-	public void NewWave ()
-	{
+		// Use this for initialization
+		void Start ()
+		{
+	
+		}
+	
+		// Update is called once per frame
+		void Update ()
+		{
+	
+		}
 
+		public void NewWave ()
+		{
+
+		}
+
+		void spawnEnemy() 
+		{
+		}
+
+		void spawnAsteroid()
+		{
+
+		}
 	}
 }
