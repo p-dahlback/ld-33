@@ -28,7 +28,8 @@ namespace LD33.Entities
 		// Update is called once per frame
 		void Update ()
 		{
-			RotateAndThrust ();
+//			RotateAndThrust ();
+			AimStrafeAndThrust ();
 			HandleFiring ();
 		}
 
@@ -43,6 +44,20 @@ namespace LD33.Entities
 				
 				timeSinceLastShot = 0;
 			}
+		}
+
+		void AimStrafeAndThrust()
+		{
+			Vector3 mousePosInWorld = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			transform.rotation = Quaternion.LookRotation (Vector3.forward, mousePosInWorld - transform.position);
+			
+			float horizontalThrust = Input.GetAxis ("Horizontal");
+			float verticalThrust = Input.GetAxis ("Vertical");
+
+			
+			Rigidbody2D body = GetComponent<Rigidbody2D> ();
+			body.AddForce (transform.up * verticalThrust * speed * Time.deltaTime);
+			body.AddForce (transform.right * -horizontalThrust * speed * Time.deltaTime);
 		}
 
 		void RotateAndThrust ()

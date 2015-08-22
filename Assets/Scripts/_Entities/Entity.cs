@@ -6,7 +6,7 @@ namespace LD33.Entities
 	public class Entity : MonoBehaviour
 	{
 
-		public int health = 100;
+		public int health = 5;
 		public Faction faction;
 		public GameObject replacementOnDeath;
 
@@ -20,7 +20,7 @@ namespace LD33.Entities
 		void Update ()
 		{
 
-			checkDamage ();
+			checkDamage (false);
 		}
 
 		void OnCollisionEnter2D (Collision2D collision)
@@ -39,20 +39,33 @@ namespace LD33.Entities
 			}
 		}
 
+		/**
+		 * Damages the entity, killing it if its health reaches zero. 
+		 */
 		public void Damage (int damage)
 		{
 			health -= damage;
-			checkDamage ();
+			checkDamage (false);
 		}
 
-		private void checkDamage ()
+		/**
+		 * Consumes the entity's health points in return for actions or benefits.
+		 * If the health reaches zero, the entity disappears.
+		 */
+		public void Consume (int damage)
+		{
+			health -= damage;
+			checkDamage (true);
+		}
+
+		private void checkDamage (bool isConsumption)
 		{
 
 			if (health == 0) {
 
 				OnDeath ();
 
-				if (replacementOnDeath != null) {
+				if (!isConsumption && replacementOnDeath != null) {
 					Instantiate (replacementOnDeath, transform.position, transform.rotation);
 				}
 				Destroy (gameObject);

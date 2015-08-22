@@ -16,6 +16,7 @@ namespace LD33.Entities
 		private float deltaTime;
 		private float leftOverMass = 0;
 
+
 		// Use this for initialization
 		void Start ()
 		{
@@ -27,6 +28,17 @@ namespace LD33.Entities
 		{
 			MultiPulse ();
 		}
+
+//		void UpdateSizeFromHealth ()
+//		{
+//			Entity entity = gameObject.GetComponent<Entity>();
+//
+//			if(entity != null)
+//			{
+//				float diff = maximumScale - minimumScale;
+//
+//			}
+//		}
 
 		void MultiPulse ()
 		{
@@ -82,12 +94,6 @@ namespace LD33.Entities
 			newBlob.blobFactory = blobFactory;
 			newBlob.gameObject.SetActive (true);
 			newBlob.AddMass (leftOverMass, point);
-
-//			SpringJoint2D joint = gameObject.AddComponent<SpringJoint2D> ();
-//			joint.distance = 0.05f;
-//			joint.dampingRatio = 0.95f;
-//			joint.anchor = transform.InverseTransformPoint(point);
-//			joint.connectedBody = newBlob.gameObject.GetComponent<Rigidbody2D> ();
 
 			DistanceJoint2D joint = gameObject.AddComponent<DistanceJoint2D>();
 			joint.distance = 0.05f;
