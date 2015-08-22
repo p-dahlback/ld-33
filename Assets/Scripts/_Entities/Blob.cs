@@ -78,7 +78,7 @@ namespace LD33.Entities
 			
 			SpringJoint2D joint = gameObject.AddComponent<SpringJoint2D>();
 			joint.anchor = point;
-			joint.distance = 0.2f;
+			joint.distance = 0.1f;
 			joint.dampingRatio = 0.2f;
 			joint.connectedAnchor = point;
 			
