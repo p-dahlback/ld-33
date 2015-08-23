@@ -67,7 +67,14 @@ namespace LD33.Entities
 
 				if (!isConsumption && replacementOnDeath != null) {
 					GameObject replacement = (GameObject) Instantiate (replacementOnDeath, transform.position, transform.rotation);
+					Rigidbody2D body = replacement.GetComponent<Rigidbody2D>();
 					replacement.SetActive (true);
+					if(body != null)
+					{
+						Rigidbody2D currentBody = gameObject.GetComponent<Rigidbody2D>();
+						body.velocity = currentBody.velocity * 0.3f;
+					}
+
 				}
 				Destroy (gameObject);
 			}

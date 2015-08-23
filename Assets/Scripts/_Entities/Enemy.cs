@@ -5,6 +5,14 @@ namespace LD33.Entities
 {
 	public class Enemy : Entity
 	{
+		public enum Ai
+		{
+			HARMLESS,
+			STRAIGHT_SHOOTER,
+			SEEK_PLAYER,
+		}
+
+		public Ai aiSetting;
 		public Rigidbody2D bullet;
 		public float bulletSpeed = 5f;
 		public float speed = 5f;
@@ -30,8 +38,18 @@ namespace LD33.Entities
 		{
 			if (aiStarted) {
 
-				FireBullets ();
-
+				switch (aiSetting)
+				{
+				default:
+				case Ai.HARMLESS:
+					break;
+				case Ai.STRAIGHT_SHOOTER:
+					FireBullets ();
+					break;
+				case Ai.SEEK_PLAYER:
+					SeekPlayer ();
+					break;
+				}
 			}
 		}
 

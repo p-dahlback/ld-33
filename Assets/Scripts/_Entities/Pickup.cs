@@ -8,11 +8,15 @@ namespace LD33.Entities
 		public float value = 0.2f;
 		public float lifeTime = 5;
 
+		void Awake()
+		{
+			Rigidbody2D body = GetComponent<Rigidbody2D>();
+			body.angularVelocity = Random.Range(30, 90);
+		}
 
 		// Use this for initialization
 		void Start ()
 		{
-	
 		}
 	
 		// Update is called once per frame
