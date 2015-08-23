@@ -55,8 +55,15 @@ namespace LD33.Entities
 
 		void OnTriggerEnter2D (Collider2D collider)
 		{
-			if (collider.gameObject.CompareTag ("Enemy Trigger")) {
+			if (collider.gameObject.CompareTag (Constants.TAG_ENEMY_TRIGGER)) {
 				aiStarted = true;
+			}
+		}
+
+		void OnTriggerExit2D(Collider2D collider)
+		{
+			if (collider.gameObject.CompareTag (Constants.TAG_ENEMY_TRIGGER)) {
+				Destroy (gameObject);
 			}
 		}
 

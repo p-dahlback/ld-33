@@ -41,8 +41,8 @@ namespace LD33.Entities
 					if (entity.faction == faction) {
 						Physics2D.IgnoreCollision (gameObject.GetComponent<Collider2D> (), collision.collider);
 					} else if (entity.faction == Faction.MISC) {
-						Debug.Log ("Misc! Destroy!");
-						Damage (9999);
+						Debug.Log ("Misc! Harm!");
+						Damage (1);
 					} else {
 						Debug.Log ("Other faction! Damage!");
 						Damage (entity.currentHealth);

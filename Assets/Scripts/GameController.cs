@@ -6,9 +6,18 @@ namespace LD33
 {
 	public class GameController : MonoBehaviour
 	{
+		private enum State
+		{
+			PAUSE,
+			WAVE,
+		}
+
 		private static GameController _instance;
 		public SpawnerController spawnerController;
+		public float restTime = 6f;
 		private int currentWave = 0;
+		private State state = State.PAUSE;
+		private float pauseTimer = 0;
 
 		public static GameController GetInstance ()
 		{
@@ -39,12 +48,36 @@ namespace LD33
 		// Update is called once per frame
 		void Update ()
 		{
+			if (state == State.PAUSE) {
+				pauseTimer += Time.deltaTime;
+				if (pauseTimer >= restTime) {
+					state = State.WAVE;
+					currentWave++;
+					NewWave ();
+				}
 
+			} else if (state == State.WAVE) {
+				GameObject[] objects = GameObject.FindGameObjectsWithTag (Constants.TAG_ENEMY);
+				if (objects.Length == 0) {
+					state = State.PAUSE;
+					pauseTimer = 0;
+				}
+			}
 		}
 
 		public void NewWave ()
 		{
-			spawnerController.SpawnEnemiesAndAsteroids (1, 0);
+			if (currentWave <= 2) {
+				spawnerController.SpawnEnemiesAndAsteroids (2, 0);
+			} else if (currentWave <= 3) {
+				spawnerController.SpawnEnemiesAndAsteroids (0, 1);
+			} else if (currentWave <= 4) {
+				spawnerController.SpawnEnemiesAndAsteroids (2, 1);
+			} else if (currentWave <= 6) {
+				spawnerController.SpawnEnemiesAndAsteroids (4, 1);
+			} else {
+				spawnerController.SpawnEnemiesAndAsteroids (4, 1);
+			}
 		}
 
 		public void GameOver ()
