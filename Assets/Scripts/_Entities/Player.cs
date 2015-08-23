@@ -36,7 +36,7 @@ namespace LD33.Entities
 		{
 	
 		}
-	
+
 		// Update is called once per frame
 		void Update ()
 		{
@@ -102,7 +102,10 @@ namespace LD33.Entities
 			Rigidbody2D newBullet = (Rigidbody2D)Instantiate (bullet, transform.position, transform.rotation);
 			newBullet.gameObject.SetActive (true);
 			newBullet.velocity = new Vector2 (transform.up.x, transform.up.y) * bulletSpeed;
-			
+
+			if (leastConnectedBlob == null) {
+				FindLeastConnectedBlob ();
+			}
 			Entity blobEntity = leastConnectedBlob.GetComponent<Entity> ();
 			if (leastConnectedBlob == this) {
 
@@ -114,36 +117,41 @@ namespace LD33.Entities
 			}
 		}
 
-		void FindLeastConnectedBlob ()
+		public void FindLeastConnectedBlob ()
 		{
 			Hashtable processingTable = new Hashtable ();
+			processingTable.Add (gameObject.GetInstanceID (), gameObject);
 			GameObject leastConnected = FindLeastConnectedBlob (gameObject, processingTable);
-			leastConnectedBlob = leastConnected.GetComponent<Blob>();
+			leastConnectedBlob = leastConnected.GetComponent<Blob> ();
 		}
 
 		GameObject FindLeastConnectedBlob (GameObject obj, Hashtable processedObjects)
 		{
 			Joint2D[] joints = obj.GetComponents<Joint2D> ();
-			if (joints != null && joints.Length > 1) {
+			if (joints != null && joints.Length > 0) {
 
 				int minJoints = joints.Length;
 				GameObject minJointsObject = obj;
 				foreach (Joint2D joint in joints) {
-					GameObject connectedObj = joint.connectedBody.gameObject;
-					if (processedObjects.ContainsKey (connectedObj.GetInstanceID ())) {
-						continue;
-					}
+					if (joint != null && joint.connectedBody != null && joint.connectedBody.gameObject != null) {
+						GameObject connectedObj = joint.connectedBody.gameObject;
+						if (processedObjects.ContainsKey (connectedObj.GetInstanceID ())) {
+							continue;
+						}
 
-					processedObjects.Add (connectedObj.GetInstanceID (), connectedObj);
-					GameObject subLeastConnected = FindLeastConnectedBlob (obj, processedObjects);
+						processedObjects.Add (connectedObj.GetInstanceID (), connectedObj);
+						GameObject subLeastConnected = FindLeastConnectedBlob (connectedObj, processedObjects);
 
-					Joint2D[] subJoints = subLeastConnected.GetComponents<Joint2D> ();
-					if (subJoints == null)
-						return subLeastConnected;
+						Joint2D[] subJoints = subLeastConnected.GetComponents<Joint2D> ();
+						if (subJoints == null)
+							return subLeastConnected;
 
-					if (subJoints.Length < minJoints) {
-						minJoints = subJoints.Length;
-						minJointsObject = subLeastConnected;
+						if (subJoints.Length < minJoints) {
+							minJoints = subJoints.Length;
+							minJointsObject = subLeastConnected;
+						}
+					} else {
+						DestroyImmediate (joint);
 					}
 				}
 				return minJointsObject;

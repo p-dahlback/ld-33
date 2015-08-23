@@ -25,7 +25,6 @@ namespace LD33.Entities
 
 			if(lifeTime < 0) 
 			{
-				Debug.Log("Bullet expired");
 				Destroy (gameObject);
 			}
 		}
@@ -64,7 +63,6 @@ namespace LD33.Entities
 				}
 			}
 
-			Debug.Log("Destroying bullet");
 			Destroy(gameObject);
 		}
 	}

@@ -8,6 +8,7 @@ namespace LD33
 
 		public const string TAG_PLAYER = "Player";
 		public const string TAG_PICKUP = "Pickup";
+		public const string TAG_CURRENT_PLAYER = "Current Player";
 
 		public const int DEFAULT_LAYER = 0;
 		public const int PLAYER_LAYER = 8;

@@ -95,9 +95,10 @@ namespace LD33.Entities
 				}
 				
 				Player player = GetComponent<Player> ();
+				bool isPlayer = player != null && player.enabled;
 				Destroy (gameObject);
 
-				if (player != null) {
+				if (isPlayer) {
 					GameController controller = GameController.GetInstance ();
 					controller.PlayerChangeMainBody (player);
 				}

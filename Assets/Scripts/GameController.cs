@@ -55,7 +55,7 @@ namespace LD33
 		public void PlayerChangeMainBody (Player player)
 		{
 			Debug.Log ("---Changing main body");
-			GameObject[] gameObjects = GameObject.FindGameObjectsWithTag ("Player");
+			GameObject[] gameObjects = GameObject.FindGameObjectsWithTag (Constants.TAG_PLAYER);
 			if (gameObjects != null && gameObjects.Length > 0) {
 
 				int maxJoints = 0;
@@ -82,6 +82,7 @@ namespace LD33
 				if (maxJointsObject != null) {
 
 					maxJointsObject.name = "Player";
+					maxJointsObject.tag = Constants.TAG_CURRENT_PLAYER;
 					DestroyImmediate (maxJointsObject.gameObject.GetComponent<Pickup> ());
 
 					Player newPlayer = maxJointsObject.GetComponent<Player> ();
@@ -100,19 +101,12 @@ namespace LD33
 
 		public void MarkDisconnectedBlobsForPickup ()
 		{
-			GameObject[] parts = GameObject.FindGameObjectsWithTag ("Player");
-			GameObject headObject = null;
-			Joint2D[] joints = null;
+			GameObject[] parts = GameObject.FindGameObjectsWithTag (Constants.TAG_PLAYER);
+			GameObject headObject = GameObject.FindGameObjectWithTag (Constants.TAG_CURRENT_PLAYER);
 
-			foreach (GameObject obj in parts) {
-				if (obj.name.Equals ("Player")) {
-				
-					headObject = obj;
-					joints = headObject.GetComponents<Joint2D> ();
-				}
-			}
+			if (headObject != null) {
+				Joint2D[] joints = headObject.GetComponents<Joint2D> ();
 
-			if (headObject != null && joints != null) {
 				MarkForPickup (headObject, joints, parts);
 			}
 		}
@@ -127,17 +121,19 @@ namespace LD33
 
 					if (joint != null && joint.connectedBody != null && joint.connectedBody.gameObject != null) {
 						GameObject obj = joint.connectedBody.gameObject;
-						table.Add (obj.GetInstanceID (), obj);
-						ProcessConnectedObjects (obj, table);
+						if (!table.ContainsKey (obj.GetInstanceID ())) {
+							table.Add (obj.GetInstanceID (), obj);
+							ProcessConnectedObjects (obj, table);
+						}
 					} else {
 						DestroyImmediate (joint);
 					}
 				}
 			}
 
-			if (table.Count < playerParts.Length) {
+			if (table.Count < playerParts.Length + 1) {
 				foreach (GameObject part in playerParts) {
-					if (part.name.Equals ("Player"))
+					if (part.tag.Equals (Constants.TAG_CURRENT_PLAYER))
 						continue;
 
 					if (!table.ContainsKey (part.GetInstanceID ())) {
@@ -152,7 +148,7 @@ namespace LD33
 			Pickup pickup = baseObject.GetComponent<Pickup> ();
 			Joint2D[] joints = baseObject.GetComponents<Joint2D> ();
 
-			if (pickup.enabled) {
+			if (pickup != null && pickup.enabled) {
 				pickup.enabled = false;
 				baseObject.tag = Constants.TAG_PLAYER;
 				baseObject.layer = Constants.PLAYER_LAYER;
@@ -166,7 +162,7 @@ namespace LD33
 
 						if (!processedObjects.ContainsKey (obj.GetInstanceID ())) {
 						
-							if (obj.name.Equals (Constants.TAG_PLAYER)) {
+							if (obj.tag.Equals (Constants.TAG_CURRENT_PLAYER)) {
 								processedObjects.Add (obj.GetInstanceID (), obj);
 								continue;
 							} else {

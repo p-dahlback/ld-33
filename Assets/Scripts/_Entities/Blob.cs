@@ -36,15 +36,18 @@ namespace LD33.Entities
 
 		}
 	
+		void FixedUpdate ()
+		{
+			if (leftOverMass >= requiredMassForSplit) {
+				
+				Vector2 point = Random.insideUnitCircle * minimumScale / 2;
+				AddBlob (new Vector2 (transform.position.x, transform.position.y) - point);
+			}
+		}
+
 		// Update is called once per frame
 		void Update ()
 		{	
-			if (leftOverMass >= requiredMassForSplit) {
-				Vector2 point = Random.insideUnitCircle * minimumScale / 2;
-				AddBlob (new Vector2(transform.position.x, transform.position.y) + point);
-			}
-
-
 			MultiPulse ();
 		}
 
@@ -98,12 +101,13 @@ namespace LD33.Entities
 					minimumScale -= diff;
 					
 					leftOverMass = diff;
+				} else {
+					leftOverMass = 0;
 				}
 			}
 
 			Entity entity = GetComponent<Entity> ();
 			entity.ResetHealth ();
-
 		}
 		
 		private void AddBlob (Vector2 point)
@@ -113,15 +117,22 @@ namespace LD33.Entities
 			Blob newBlob = (Blob)Instantiate (blobFactory, new Vector3 (point.x, point.y, 0), transform.rotation);
 			newBlob.blobFactory = blobFactory;
 			newBlob.gameObject.SetActive (true);
-			newBlob.AddMass (leftOverMass, new Vector2 (transform.position.x, transform.position.y) - point);
 
 			DistanceJoint2D joint = gameObject.AddComponent<DistanceJoint2D> ();
 			joint.distance = 0.05f;
 			joint.anchor = transform.InverseTransformPoint (point);
 
 			joint.connectedBody = newBlob.gameObject.GetComponent<Rigidbody2D> ();
-
+			
+			Vector2 newPoint = Random.insideUnitCircle * minimumScale / 2;
+			newBlob.AddMass (leftOverMass, new Vector2 (newBlob.transform.position.x, newBlob.transform.position.y) - newPoint);
 			leftOverMass = 0;
+
+			GameObject obj = GameObject.FindGameObjectWithTag (Constants.TAG_CURRENT_PLAYER);
+			if (obj != null) {
+				Player player = obj.GetComponent<Player> ();
+				player.FindLeastConnectedBlob ();
+			}
 		}
 	}
 }
