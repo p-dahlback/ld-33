@@ -99,22 +99,29 @@ namespace LD33.Entities
 
 		public void FireBullet ()
 		{
+			if (leastConnectedBlob == null) {
+				FindLeastConnectedBlob ();
+			}
+
+			Entity blobEntity = leastConnectedBlob.GetComponent<Entity> ();
+			if (leastConnectedBlob.gameObject == gameObject) {
+
+				if (blobEntity.health > 2) {
+					blobEntity.Damage (massConsumptionPerShot);
+				} else {
+					Debug.Log("Too weak; preventing shot");
+					return;
+				}
+				
+			} else {
+				
+				blobEntity.Consume (massConsumptionPerShot);
+			}
+
 			Rigidbody2D newBullet = (Rigidbody2D)Instantiate (bullet, transform.position, transform.rotation);
 			newBullet.gameObject.SetActive (true);
 			newBullet.velocity = new Vector2 (transform.up.x, transform.up.y) * bulletSpeed;
 
-			if (leastConnectedBlob == null) {
-				FindLeastConnectedBlob ();
-			}
-			Entity blobEntity = leastConnectedBlob.GetComponent<Entity> ();
-			if (leastConnectedBlob == this) {
-
-				blobEntity.Damage (massConsumptionPerShot);
-
-			} else {
-
-				blobEntity.Consume (massConsumptionPerShot);
-			}
 		}
 
 		public void FindLeastConnectedBlob ()

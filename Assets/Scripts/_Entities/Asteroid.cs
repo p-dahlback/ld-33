@@ -91,11 +91,11 @@ namespace LD33.Entities
 
 		int CalculateReplacementNumber (float size)
 		{
-			if (size / 4 >= 1)
+			if (size / 4 >= 0.5f)
 				return 4;
-			if (size / 3 >= 1)
+			if (size / 3 >= 0.5f)
 				return 3;
-			if (size / 2 >= 1)
+			if (size / 2 >= 0.5f)
 				return 2;
 			return 0;
 		}
