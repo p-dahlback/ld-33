@@ -66,7 +66,8 @@ namespace LD33.Entities
 				OnDeath ();
 
 				if (!isConsumption && replacementOnDeath != null) {
-					Instantiate (replacementOnDeath, transform.position, transform.rotation);
+					GameObject replacement = (GameObject) Instantiate (replacementOnDeath, transform.position, transform.rotation);
+					replacement.SetActive (true);
 				}
 				Destroy (gameObject);
 			}
