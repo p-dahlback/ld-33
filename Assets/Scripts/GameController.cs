@@ -112,9 +112,12 @@ namespace LD33
 			} else if (currentWave <= 12) {
 				spawnerController.SetEnemyPrefabs (firstEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (4, 1);
-			} else {
+			} else if (currentWave <= 15) {
 				spawnerController.SetEnemyPrefabs (firstEnemy, secondEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (5, 2);
+			} else {
+				spawnerController.SetEnemyPrefabs (firstEnemy, secondEnemy);
+				spawnerController.SpawnEnemiesAndAsteroids (7, 1);
 			}
 		}
 
