@@ -15,10 +15,9 @@ namespace LD33
 		private static GameController _instance;
 		public SpawnerController spawnerController;
 		public float restTime = 6f;
-
-		public Enemy firstEnemy;
-		public Enemy secondEnemy;
-
+		public Transform eye = null;
+		public Enemy firstEnemy = null;
+		public Enemy secondEnemy = null;
 		private int currentWave = 0;
 		private State state = State.PAUSE;
 		private float pauseTimer = 0;
@@ -76,30 +75,30 @@ namespace LD33
 		public void NewWave ()
 		{
 			if (currentWave <= 1) {
-				spawnerController.SetEnemyPrefabs(firstEnemy);
+				spawnerController.SetEnemyPrefabs (firstEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (1, 0);
-			} else if(currentWave <= 2) {
-				spawnerController.SetEnemyPrefabs(firstEnemy);
+			} else if (currentWave <= 2) {
+				spawnerController.SetEnemyPrefabs (firstEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (2, 0);
 			} else if (currentWave <= 3) {
 				spawnerController.SpawnEnemiesAndAsteroids (0, 1);
 			} else if (currentWave <= 4) {
-				spawnerController.SetEnemyPrefabs(secondEnemy);
+				spawnerController.SetEnemyPrefabs (secondEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (1, 0);
 			} else if (currentWave <= 5) {
-				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SetEnemyPrefabs (firstEnemy, secondEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (2, 0);
 			} else if (currentWave <= 6) {
-				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SetEnemyPrefabs (firstEnemy, secondEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (2, 1);
 			} else if (currentWave <= 9) {
-				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SetEnemyPrefabs (firstEnemy, secondEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (2, 2);
 			} else if (currentWave <= 12) {
-				spawnerController.SetEnemyPrefabs(firstEnemy);
+				spawnerController.SetEnemyPrefabs (firstEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (4, 1);
 			} else {
-				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SetEnemyPrefabs (firstEnemy, secondEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (5, 2);
 			}
 		}
@@ -141,6 +140,12 @@ namespace LD33
 					maxJointsObject.name = "Player";
 					maxJointsObject.tag = Constants.TAG_CURRENT_PLAYER;
 					Destroy (maxJointsObject.gameObject.GetComponent<Pickup> ());
+
+					Transform newEye = (Transform)Instantiate (eye,
+					                                            maxJointsObject.transform.TransformPoint (eye.transform.localPosition),
+					                                            maxJointsObject.transform.rotation);
+					newEye.gameObject.SetActive (true);
+					newEye.parent = maxJointsObject.transform;
 
 					Player newPlayer = maxJointsObject.GetComponent<Player> ();
 					newPlayer.enabled = true;

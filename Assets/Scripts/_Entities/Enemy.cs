@@ -17,6 +17,8 @@ namespace LD33.Entities
 		public float bulletSpeed = 5f;
 		public float speed = 5f;
 		public float cooldown = 1.0f;
+		public float aiDistance = 2.5f;
+		public float rotationSpeed = 45f;
 		private bool aiStarted = false;
 		private float timeSinceLastShot;
 		private Blob target;
@@ -38,8 +40,7 @@ namespace LD33.Entities
 		{
 			if (aiStarted) {
 
-				switch (aiSetting)
-				{
+				switch (aiSetting) {
 				default:
 				case Ai.HARMLESS:
 					break;
@@ -47,6 +48,7 @@ namespace LD33.Entities
 					FireBullets ();
 					break;
 				case Ai.SEEK_PLAYER:
+
 					SeekPlayer ();
 					break;
 				}
@@ -60,7 +62,7 @@ namespace LD33.Entities
 			}
 		}
 
-		void OnTriggerExit2D(Collider2D collider)
+		void OnTriggerExit2D (Collider2D collider)
 		{
 			if (collider.gameObject.CompareTag (Constants.TAG_ENEMY_TRIGGER)) {
 				Destroy (gameObject);
@@ -69,9 +71,30 @@ namespace LD33.Entities
 
 		public void SeekPlayer ()
 		{
+			if (target == null) {
+				FindTarget ();
+			}
 
+			if (target != null) {
+				
+				Rigidbody2D body = gameObject.GetComponent<Rigidbody2D> ();
+				Quaternion targetRotation = Quaternion.LookRotation (Vector3.forward, target.transform.position - transform.position);
+				float targetRotZ = targetRotation.eulerAngles.z;
+				
+				body.MoveRotation (Mathf.MoveTowardsAngle (body.rotation, targetRotZ, rotationSpeed * Time.deltaTime));
+				
+				FireBullets ();
+
+				if ((target.transform.position - transform.position).magnitude < 2.5f) {	
+				
+					body.velocity = body.velocity * 0.8f * Time.deltaTime;
+
+				} else {
+					body.velocity = body.transform.up * speed;
+				}
+			}
 		}
-
+		
 		public void AvoidAsteroids ()
 		{
 

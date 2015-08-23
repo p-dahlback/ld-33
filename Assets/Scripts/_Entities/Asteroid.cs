@@ -45,6 +45,13 @@ namespace LD33.Entities
 		{
 			
 		}
+
+		void OnTriggerExit2D (Collider2D collider)
+		{
+			if (collider.gameObject.CompareTag (Constants.TAG_ENEMY_TRIGGER)) {
+				Destroy (gameObject);
+			}
+		}
 	
 		protected override void OnDeath ()
 		{
