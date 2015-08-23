@@ -65,14 +65,12 @@ namespace LD33.Entities
 				transform.rotation = Quaternion.LookRotation (Vector3.forward, position - transform.position);
 
 				GameObject newAsteroid = InstantiateSubAsteroid(size / replacementNumber);
-				Rigidbody2D rigidBody = newAsteroid.GetComponent<Rigidbody2D>();
+				newAsteroid.GetComponent<Entity>().health = health <= 1 ? 1 : health / 2;
 			}
 		}
 
 		GameObject InstantiateSubAsteroid(float maxSize)
 		{
-//			transform.position = position;
-
 			maximumSpeed = speed;
 			minimumSpeed = speed;
 			maximumRotationSpeed = Mathf.Abs (rotationSpeed * 1.2f);
@@ -80,9 +78,7 @@ namespace LD33.Entities
 			
 			maximumSize = maxSize;
 			minimumSize = maxSize * 0.8f;
-			
-			health = 1;
-			
+
 			return Instantiate (gameObject);
 		}
 

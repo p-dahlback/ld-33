@@ -10,6 +10,7 @@ namespace LD33
 		public Spawner[] spawners;
 		public Enemy[] enemyPrefabs;
 		public Asteroid[] asteroidPrefabs;
+		public float maxWaitTime = 1.0f;
 
 		public void SetEnemyPrefabs(params Enemy[] enemies)
 		{
@@ -45,7 +46,8 @@ namespace LD33
 				
 				Vector3 direction = DirectionFromSpawner(spawner);
 				Quaternion rotation = Quaternion.LookRotation (Vector3.forward, direction);
-				spawner.Spawn(prefabs[Random.Range (0, prefabs.Length)].gameObject, rotation);
+				float time = Random.value * maxWaitTime;
+				spawner.Spawn(prefabs[Random.Range (0, prefabs.Length)].gameObject, rotation, time);
 				
 				spawners.RemoveAt (index);
 				if (spawners.Count == 0)

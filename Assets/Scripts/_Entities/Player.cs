@@ -10,6 +10,7 @@ namespace LD33.Entities
 		public float cooldown = 0.15f;
 		public float speed = 1000.0f;
 		public float rotationSpeed = 180;
+		public float massConsumptionPerShot = 0.5f;
 		private float timeSinceLastShot = 0f;
 		private Blob leastConnectedBlob;
 
@@ -40,7 +41,6 @@ namespace LD33.Entities
 		// Update is called once per frame
 		void Update ()
 		{
-//			RotateAndThrust ();
 			AimStrafeAndThrust ();
 			HandleFiring ();
 
@@ -109,11 +109,11 @@ namespace LD33.Entities
 			Entity blobEntity = leastConnectedBlob.GetComponent<Entity> ();
 			if (leastConnectedBlob == this) {
 
-				blobEntity.Damage (0.5f);
+				blobEntity.Damage (massConsumptionPerShot);
 
 			} else {
 
-				blobEntity.Consume (0.5f);
+				blobEntity.Consume (massConsumptionPerShot);
 			}
 		}
 

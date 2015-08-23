@@ -1,15 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Spawner : MonoBehaviour {
+public class Spawner : MonoBehaviour
+{
 
 	public bool isNorth = false;
 	public bool isEast = false;
+	private float spawnDelay;
+	private GameObject toSpawnObject;
+	private Quaternion toSpawnQuaternion;
 
-	public GameObject Spawn(GameObject gameObject, Quaternion rotation)
+	void Update ()
 	{
-		GameObject ret = (GameObject) Instantiate(gameObject, transform.position, rotation);
-		ret.SetActive (true);
-		return ret;
+		if (spawnDelay > 0) {
+			spawnDelay -= Time.deltaTime;
+
+			if (spawnDelay <= 0) {
+				GameObject obj = (GameObject)Instantiate (toSpawnObject, transform.position, toSpawnQuaternion);
+				obj.SetActive (true);
+			}
+		}
+	}
+
+	public void Spawn (GameObject gameObject, Quaternion rotation, float spawnDelay)
+	{
+		this.toSpawnObject = gameObject;
+		this.toSpawnQuaternion = rotation;
+		this.spawnDelay = spawnDelay;
 	}
 }

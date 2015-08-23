@@ -15,9 +15,14 @@ namespace LD33
 		private static GameController _instance;
 		public SpawnerController spawnerController;
 		public float restTime = 6f;
+
+		public Enemy firstEnemy;
+		public Enemy secondEnemy;
+
 		private int currentWave = 0;
 		private State state = State.PAUSE;
 		private float pauseTimer = 0;
+		private bool hasSpawned = false;
 
 		public static GameController GetInstance ()
 		{
@@ -58,25 +63,44 @@ namespace LD33
 
 			} else if (state == State.WAVE) {
 				GameObject[] objects = GameObject.FindGameObjectsWithTag (Constants.TAG_ENEMY);
-				if (objects.Length == 0) {
+				if (objects.Length == 0 && hasSpawned) {
 					state = State.PAUSE;
 					pauseTimer = 0;
+					hasSpawned = false;
+				} else if (!hasSpawned) {
+					hasSpawned = true;
 				}
 			}
 		}
 
 		public void NewWave ()
 		{
-			if (currentWave <= 2) {
+			if (currentWave <= 1) {
+				spawnerController.SetEnemyPrefabs(firstEnemy);
+				spawnerController.SpawnEnemiesAndAsteroids (1, 0);
+			} else if(currentWave <= 2) {
+				spawnerController.SetEnemyPrefabs(firstEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (2, 0);
 			} else if (currentWave <= 3) {
 				spawnerController.SpawnEnemiesAndAsteroids (0, 1);
 			} else if (currentWave <= 4) {
-				spawnerController.SpawnEnemiesAndAsteroids (2, 1);
+				spawnerController.SetEnemyPrefabs(secondEnemy);
+				spawnerController.SpawnEnemiesAndAsteroids (1, 0);
+			} else if (currentWave <= 5) {
+				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SpawnEnemiesAndAsteroids (2, 0);
 			} else if (currentWave <= 6) {
+				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SpawnEnemiesAndAsteroids (2, 1);
+			} else if (currentWave <= 9) {
+				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SpawnEnemiesAndAsteroids (2, 2);
+			} else if (currentWave <= 12) {
+				spawnerController.SetEnemyPrefabs(firstEnemy);
 				spawnerController.SpawnEnemiesAndAsteroids (4, 1);
 			} else {
-				spawnerController.SpawnEnemiesAndAsteroids (4, 1);
+				spawnerController.SetEnemyPrefabs(firstEnemy, secondEnemy);
+				spawnerController.SpawnEnemiesAndAsteroids (5, 2);
 			}
 		}
 
@@ -116,7 +140,7 @@ namespace LD33
 
 					maxJointsObject.name = "Player";
 					maxJointsObject.tag = Constants.TAG_CURRENT_PLAYER;
-					DestroyImmediate (maxJointsObject.gameObject.GetComponent<Pickup> ());
+					Destroy (maxJointsObject.gameObject.GetComponent<Pickup> ());
 
 					Player newPlayer = maxJointsObject.GetComponent<Player> ();
 					newPlayer.enabled = true;

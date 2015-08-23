@@ -53,12 +53,10 @@ namespace LD33.Entities
 					Debug.Log("Hit damageable object");
 					if(entity != null) {
 						entity.Damage (damageValue);
-					} else {
-						Destroy (bullet.gameObject);
 					}
 				} else {
 					Debug.Log("Ignoring object from same faction");
-					Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), collision.collider);
+//					Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), collision.collider);
 					return;
 				}
 			}
