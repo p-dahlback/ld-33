@@ -118,7 +118,7 @@ namespace LD33.Entities
 			Entity blobEntity = leastConnectedBlob.GetComponent<Entity> ();
 			if (leastConnectedBlob.gameObject == gameObject) {
 
-				if (blobEntity.health > 2) {
+				if (blobEntity.CurrentHealth - massConsumptionPerShot >= 2) {
 					blobEntity.Damage (massConsumptionPerShot);
 				} else {
 					Debug.Log ("Too weak; preventing shot");
