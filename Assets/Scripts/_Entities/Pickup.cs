@@ -36,8 +36,10 @@ namespace LD33.Entities
 			Blob blob = collision.gameObject.GetComponent<Blob> ();
 
 			if (blob != null) {
+
+				Destroy (this.gameObject);
 				blob.AddMass (value, collision.contacts [0].point);
-				Destroy (gameObject);
+
 			}
 
 		}

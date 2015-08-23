@@ -11,12 +11,24 @@ namespace LD33.Entities
 		public float speed = 1000.0f;
 		public float rotationSpeed = 180;
 		private float timeSinceLastShot = 0f;
+		private Blob leastConnectedBlob;
+
+		void Awake ()
+		{
+			FindLeastConnectedBlob ();
+		}
 
 		public void CopyFrom (Player player)
 		{
 			bullet = player.bullet;
 			bulletSpeed = player.bulletSpeed;
 			cooldown = player.cooldown;
+
+			Rigidbody2D body = GetComponent<Rigidbody2D> ();
+			Rigidbody2D playerBody = player.GetComponent<Rigidbody2D> ();
+			body.mass = playerBody.mass;
+			body.angularDrag = playerBody.angularDrag;
+			body.drag = playerBody.drag;
 		}
 
 		// Use this for initialization
@@ -31,6 +43,11 @@ namespace LD33.Entities
 //			RotateAndThrust ();
 			AimStrafeAndThrust ();
 			HandleFiring ();
+
+			if (Debug.isDebugBuild && Input.GetKeyDown (KeyCode.K)) {
+				Entity entity = GetComponent<Entity> ();
+				entity.Damage (9999);
+			}
 		}
 
 		void HandleFiring ()
@@ -46,7 +63,7 @@ namespace LD33.Entities
 			}
 		}
 
-		void AimStrafeAndThrust()
+		void AimStrafeAndThrust ()
 		{
 			Vector3 mousePosInWorld = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 			transform.rotation = Quaternion.LookRotation (Vector3.forward, mousePosInWorld - transform.position);
@@ -85,6 +102,53 @@ namespace LD33.Entities
 			Rigidbody2D newBullet = (Rigidbody2D)Instantiate (bullet, transform.position, transform.rotation);
 			newBullet.gameObject.SetActive (true);
 			newBullet.velocity = new Vector2 (transform.up.x, transform.up.y) * bulletSpeed;
+			
+			Entity blobEntity = leastConnectedBlob.GetComponent<Entity> ();
+			if (leastConnectedBlob == this) {
+
+				blobEntity.Damage (0.5f);
+
+			} else {
+
+				blobEntity.Consume (0.5f);
+			}
+		}
+
+		void FindLeastConnectedBlob ()
+		{
+			Hashtable processingTable = new Hashtable ();
+			GameObject leastConnected = FindLeastConnectedBlob (gameObject, processingTable);
+			leastConnectedBlob = leastConnected.GetComponent<Blob>();
+		}
+
+		GameObject FindLeastConnectedBlob (GameObject obj, Hashtable processedObjects)
+		{
+			Joint2D[] joints = obj.GetComponents<Joint2D> ();
+			if (joints != null && joints.Length > 1) {
+
+				int minJoints = joints.Length;
+				GameObject minJointsObject = obj;
+				foreach (Joint2D joint in joints) {
+					GameObject connectedObj = joint.connectedBody.gameObject;
+					if (processedObjects.ContainsKey (connectedObj.GetInstanceID ())) {
+						continue;
+					}
+
+					processedObjects.Add (connectedObj.GetInstanceID (), connectedObj);
+					GameObject subLeastConnected = FindLeastConnectedBlob (obj, processedObjects);
+
+					Joint2D[] subJoints = subLeastConnected.GetComponents<Joint2D> ();
+					if (subJoints == null)
+						return subLeastConnected;
+
+					if (subJoints.Length < minJoints) {
+						minJoints = subJoints.Length;
+						minJointsObject = subLeastConnected;
+					}
+				}
+				return minJointsObject;
+			} 
+			return obj;
 		}
 	}
 }

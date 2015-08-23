@@ -15,7 +15,20 @@ namespace LD33.Entities
 		public float requiredMassForSplit = 0.5f;
 		private float deltaTime;
 		private float leftOverMass = 0;
+		private float massModifier = 1f;
 
+		public float LeftOverMass {
+
+			get {
+				return leftOverMass;
+			}
+		}
+
+		public float MassModifier {
+
+			get { return massModifier; }
+			set { massModifier = value; }
+		}
 
 		// Use this for initialization
 		void Start ()
@@ -25,7 +38,13 @@ namespace LD33.Entities
 	
 		// Update is called once per frame
 		void Update ()
-		{
+		{	
+			if (leftOverMass >= requiredMassForSplit) {
+				Vector2 point = Random.insideUnitCircle * minimumScale / 2;
+				AddBlob (new Vector2(transform.position.x, transform.position.y) + point);
+			}
+
+
 			MultiPulse ();
 		}
 
@@ -81,9 +100,10 @@ namespace LD33.Entities
 					leftOverMass = diff;
 				}
 			}
-			if (leftOverMass >= requiredMassForSplit) {
-				AddBlob (point);
-			}
+
+			Entity entity = GetComponent<Entity> ();
+			entity.ResetHealth ();
+
 		}
 		
 		private void AddBlob (Vector2 point)
@@ -93,12 +113,13 @@ namespace LD33.Entities
 			Blob newBlob = (Blob)Instantiate (blobFactory, new Vector3 (point.x, point.y, 0), transform.rotation);
 			newBlob.blobFactory = blobFactory;
 			newBlob.gameObject.SetActive (true);
-			newBlob.AddMass (leftOverMass, point);
+			newBlob.AddMass (leftOverMass, new Vector2 (transform.position.x, transform.position.y) - point);
 
-			DistanceJoint2D joint = gameObject.AddComponent<DistanceJoint2D>();
+			DistanceJoint2D joint = gameObject.AddComponent<DistanceJoint2D> ();
 			joint.distance = 0.05f;
-			joint.anchor = transform.InverseTransformPoint(point);;
-			joint.connectedBody = newBlob.gameObject.GetComponent<Rigidbody2D>();
+			joint.anchor = transform.InverseTransformPoint (point);
+
+			joint.connectedBody = newBlob.gameObject.GetComponent<Rigidbody2D> ();
 
 			leftOverMass = 0;
 		}
