@@ -53,6 +53,12 @@ namespace LD33.Entities
 					Debug.Log("Hit damageable object");
 					if(entity != null) {
 						entity.Damage (damageValue);
+
+						if (gameObject.layer == Constants.PLAYER_EFFECT_LAYER)
+						{
+							Debug.Log("Adding points for shooting!");
+							GameController.GetInstance ().AddScore (0.4f);
+						}
 					}
 				} else {
 					Debug.Log("Ignoring object from same faction");

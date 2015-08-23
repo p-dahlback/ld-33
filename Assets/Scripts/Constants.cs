@@ -14,6 +14,7 @@ namespace LD33
 
 		public const int DEFAULT_LAYER = 0;
 		public const int PLAYER_LAYER = 8;
+		public const int PLAYER_EFFECT_LAYER = 11;
 		public const int PICKUP_LAYER = 12;
 		public const int BLOB_PICKUP_LAYER = 15;
 

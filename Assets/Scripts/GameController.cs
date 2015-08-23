@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using LD33.Entities;
 
@@ -18,6 +19,10 @@ namespace LD33
 		public Transform eye = null;
 		public Enemy firstEnemy = null;
 		public Enemy secondEnemy = null;
+		public Text scoreText;
+
+		public ScreenManager levelManager;
+
 		private int currentWave = 0;
 		private State state = State.PAUSE;
 		private float pauseTimer = 0;
@@ -34,16 +39,19 @@ namespace LD33
 				_instance = this;
 
 			} else {
-				Destroy (gameObject);
+				Destroy (_instance.gameObject);
+				_instance = this;
 			}
+
 		}
 
 		// Use this for initialization
 		void Start ()
 		{
+			ScoreController.GetInstance().Reset();
 			NewWave ();
 		}
-	
+
 		void FixedUpdate ()
 		{
 			MarkDisconnectedBlobsForPickup ();
@@ -70,6 +78,13 @@ namespace LD33
 					hasSpawned = true;
 				}
 			}
+		}
+
+		public void AddScore (float mass)
+		{
+			ScoreController scoreController = ScoreController.GetInstance();
+			scoreController.AddScore(mass);
+			scoreText.text = scoreController.Score.ToString();
 		}
 
 		public void NewWave ()
@@ -106,6 +121,7 @@ namespace LD33
 		public void GameOver ()
 		{
 			Debug.Log ("Game over!");
+			levelManager.LoadLevelWithFade("Game Over Screen");
 		}
 
 		public void PlayerChangeMainBody (Player player)
@@ -116,7 +132,6 @@ namespace LD33
 
 				int maxJoints = 0;
 				GameObject maxJointsObject = null;
-				Joint2D[] maxJointsArray = null;
 				foreach (GameObject obj in gameObjects) {
 
 					if (!obj.name.Equals ("Player")) {
@@ -129,7 +144,6 @@ namespace LD33
 							if (joints != null && joints.Length > maxJoints) {
 								maxJoints = joints.Length;
 								maxJointsObject = obj;
-								maxJointsArray = joints;
 							}
 						
 						}

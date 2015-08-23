@@ -88,6 +88,7 @@ namespace LD33.Entities
 		public void AddMass (float value, Vector2 point)
 		{
 			Debug.Log ("Picked up mass: " + value);
+			GameController.GetInstance().AddScore(value);
 			if (maximumScale >= maxMass) {
 				leftOverMass += value;
 			} else {
@@ -112,6 +113,7 @@ namespace LD33.Entities
 		
 		private void AddBlob (Vector2 point)
 		{
+			GameController.GetInstance().AddScore(0.2f);
 			leftOverMass -= requiredMassForSplit;
 
 			Blob newBlob = (Blob)Instantiate (blobFactory, new Vector3 (point.x, point.y, 0), transform.rotation);

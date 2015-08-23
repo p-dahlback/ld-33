@@ -46,6 +46,13 @@ namespace LD33.Entities
 					} else {
 						Debug.Log ("Other faction! Damage!");
 						Damage (entity.currentHealth);
+
+						if (currentHealth <= 0 && entity.gameObject != null && 
+							(entity.gameObject.CompareTag (Constants.TAG_CURRENT_PLAYER) 
+							|| entity.gameObject.CompareTag (Constants.TAG_PLAYER))) {
+							Debug.Log ("Adding points for killing unit!");
+							GameController.GetInstance ().AddScore (0.3f);
+						}
 					}
 				}
 			}
