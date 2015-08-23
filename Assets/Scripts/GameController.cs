@@ -6,23 +6,25 @@ namespace LD33
 {
 	public class GameController : MonoBehaviour
 	{
+		public SpawnerController spawnerController;
+
 		private int currentWave = 0;
 
 		// Use this for initialization
 		void Start ()
 		{
-	
+			NewWave();
 		}
 	
 		// Update is called once per frame
 		void Update ()
 		{
-	
+
 		}
 
 		public void NewWave ()
 		{
-
+			spawnerController.SpawnEnemiesAndAsteroids(1, 0);
 		}
 
 		public void GameOver ()
@@ -44,15 +46,6 @@ namespace LD33
 			}
 
 			Destroy (player);
-		}
-
-		void SpawnEnemy ()
-		{
-		}
-
-		void SpawnAsteroid ()
-		{
-
 		}
 	}
 }
