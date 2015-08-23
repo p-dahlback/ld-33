@@ -103,8 +103,10 @@ namespace LD33.Entities
 		public void FindTarget ()
 		{
 			Blob[] targets = GameObject.FindObjectsOfType<Blob> ();
-			int index = Random.Range (0, targets.Length);
-			target = targets [index];
+			if (targets != null && targets.Length > 0) {
+				int index = Random.Range (0, targets.Length);
+				target = targets [index];
+			}
 		}
 
 		public void FireBullets ()
