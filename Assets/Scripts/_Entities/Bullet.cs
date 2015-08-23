@@ -62,8 +62,6 @@ namespace LD33.Entities
 					}
 				} else {
 					Debug.Log("Ignoring object from same faction");
-//					Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), collision.collider);
-					return;
 				}
 			}
 
