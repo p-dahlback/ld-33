@@ -11,6 +11,7 @@ namespace LD33.Entities
 		public float speed = 1000.0f;
 		public float rotationSpeed = 180;
 		public float massConsumptionPerShot = 0.5f;
+		public AudioSource movementSound;
 		private float timeSinceLastShot = 0f;
 		private Blob leastConnectedBlob;
 
@@ -24,6 +25,7 @@ namespace LD33.Entities
 			bullet = player.bullet;
 			bulletSpeed = player.bulletSpeed;
 			cooldown = player.cooldown;
+			movementSound = player.movementSound;
 
 			Rigidbody2D body = GetComponent<Rigidbody2D> ();
 			Rigidbody2D playerBody = player.GetComponent<Rigidbody2D> ();
@@ -75,6 +77,16 @@ namespace LD33.Entities
 			Rigidbody2D body = GetComponent<Rigidbody2D> ();
 			body.AddForce (transform.up * verticalThrust * speed * Time.deltaTime);
 			body.AddForce (transform.right * -horizontalThrust * speed * Time.deltaTime);
+
+			if (verticalThrust != 0 || horizontalThrust != 0) {
+				if (!movementSound.isPlaying) {
+					movementSound.loop = true;
+					movementSound.Play ();
+				}
+			} else {
+				movementSound.loop = false;
+				movementSound.Stop();
+			}
 		}
 
 		void RotateAndThrust ()
@@ -109,7 +121,7 @@ namespace LD33.Entities
 				if (blobEntity.health > 2) {
 					blobEntity.Damage (massConsumptionPerShot);
 				} else {
-					Debug.Log("Too weak; preventing shot");
+					Debug.Log ("Too weak; preventing shot");
 					return;
 				}
 				
