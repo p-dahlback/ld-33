@@ -26,6 +26,8 @@ namespace LD33.UI
 
 		public void FadeIn()
 		{
+			fadeImage.gameObject.SetActive(true);
+			fadeImage.enabled = true;
 			Color color = fadeImage.color;
 			fadeImage.color = new Color(color.r, color.g, color.b, 1.0f);
 			fadeImage.CrossFadeAlpha(0.0f, fadeDuration, false);

@@ -63,6 +63,11 @@ namespace LD33.Entities
 		 */
 		public void Damage (float damage)
 		{
+			AudioSource sound = GetComponent<AudioSource> ();
+			if (sound) {
+				sound.Play ();
+			}
+
 			currentHealth -= damage;
 			checkDamage (false);
 		}

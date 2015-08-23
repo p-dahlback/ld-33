@@ -7,11 +7,17 @@ namespace LD33.Entities
 	{
 		public float value = 0.2f;
 		public float lifeTime = 5;
+		public AudioSource creationSound;
+		public AudioSource pickupSound;
 
-		void Awake()
+		void Awake ()
 		{
-			Rigidbody2D body = GetComponent<Rigidbody2D>();
-			body.angularVelocity = Random.Range(30, 90);
+			Rigidbody2D body = GetComponent<Rigidbody2D> ();
+			body.angularVelocity = Random.Range (30, 90);
+
+			if (creationSound != null) {
+				creationSound.Play ();
+			}
 		}
 
 		// Use this for initialization
@@ -37,6 +43,9 @@ namespace LD33.Entities
 
 			if (blob != null) {
 
+				if (pickupSound != null) {
+					pickupSound.Play ();
+				}
 				Destroy (this.gameObject);
 				blob.AddMass (value, collision.contacts [0].point);
 

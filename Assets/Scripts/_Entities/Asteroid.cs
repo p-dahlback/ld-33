@@ -12,6 +12,7 @@ namespace LD33.Entities
 		public float minimumSize = 1;
 		public float maximumSize = 4;
 		public float deathExplosionForce = 10;
+		public AudioSource breakSound;
 		private float speed;
 		private float rotationSpeed;
 
@@ -55,6 +56,10 @@ namespace LD33.Entities
 	
 		protected override void OnDeath ()
 		{
+			if (breakSound) {
+				breakSound.Play ();
+			}
+
 			float size = transform.localScale.x;
 			int replacementNumber = CalculateReplacementNumber (size);
 			if (replacementNumber == 0) {
@@ -67,16 +72,21 @@ namespace LD33.Entities
 
 				float x = centerPosition.x + (i % 2 - 1) * size / 4;
 				float y = centerPosition.y + (i / 2 - 1) * size / 4;
-				Vector3 position = new Vector3(x, y, 0);
+				Vector3 position = new Vector3 (x, y, 0);
 				
 				transform.rotation = Quaternion.LookRotation (Vector3.forward, position - transform.position);
 
-				GameObject newAsteroid = InstantiateSubAsteroid(size / replacementNumber);
-				newAsteroid.GetComponent<Entity>().health = health <= 1 ? 1 : health / 2;
+				GameObject newAsteroid = InstantiateSubAsteroid (size / replacementNumber);
+				newAsteroid.GetComponent<Entity> ().health = health <= 1 ? 1 : health / 2;
+			}
+
+			AudioSource sound = GetComponent<AudioSource> ();
+			if (sound != null) {
+				sound.Play ();
 			}
 		}
 
-		GameObject InstantiateSubAsteroid(float maxSize)
+		GameObject InstantiateSubAsteroid (float maxSize)
 		{
 			maximumSpeed = speed;
 			minimumSpeed = speed;

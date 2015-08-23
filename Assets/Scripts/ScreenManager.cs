@@ -8,6 +8,7 @@ namespace LD33
 	{
 
 		public FadeInOut sceneFader;
+		public AudioSource sound;
 		private float screenChangeTime = 0;
 		private string screenToChangeTo;
 
@@ -25,7 +26,12 @@ namespace LD33
 				screenChangeTime -= Time.deltaTime;
 
 				if (screenChangeTime <= 0) {
-					LoadLevel(screenToChangeTo);
+
+					if (screenToChangeTo != null) {
+						LoadLevel (screenToChangeTo);
+					} else {
+						Quit ();
+					}
 				}
 			}
 		}
@@ -37,10 +43,24 @@ namespace LD33
 
 		public void LoadLevelWithFade (string name)
 		{
+			if (sound != null) {
+				sound.Play ();
+			}
 			sceneFader.FadeOut ();
 
 			screenToChangeTo = name;
 			screenChangeTime = sceneFader.fadeDuration + 0.5f;
+		}
+
+		public void QuitWithFade ()
+		{	
+			if (sound != null) {
+				sound.Play ();
+			}
+			sceneFader.FadeOut ();
+
+			screenToChangeTo = null;
+			screenChangeTime = sceneFader.fadeDuration;
 		}
 
 		public void Quit ()
